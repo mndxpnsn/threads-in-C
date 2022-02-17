@@ -12,7 +12,7 @@
 #include <sys/param.h>
 #include <sys/sysctl.h>
 
-#define NUM_THREADS 10
+#define NUM_THREADS 8
 
 typedef struct user_type {
     int arg;
@@ -27,23 +27,6 @@ void * runner(void * args_and_data) {
     var->data = var->arg / 2;
     // exit success
     pthread_exit(0);
-}
-
-int get_number_hw_threads(void) {
-    int nm[2];
-    size_t len = 4;
-    uint32_t count;
-
-    nm[0] = CTL_HW; nm[1] = HW_AVAILCPU;
-    sysctl(nm, 2, &count, &len, NULL, 0);
-
-    if(count < 1) {
-        nm[1] = HW_NCPU;
-        sysctl(nm, 2, &count, &len, NULL, 0);
-        if(count < 1) { count = 1; }
-    }
-    
-    return count;
 }
 
 int main(int argc, const char * argv[]) {
@@ -64,9 +47,6 @@ int main(int argc, const char * argv[]) {
         // create the thread
         pthread_create(&thread_ids[i], &thread_attr[i], runner, &args_and_data_vec[i]);
     }
-    
-    // get number of hardware threads used
-    int num_hardware_threads = get_number_hw_threads();
 
     // wait for the threads to exit
     for (int i = 0; i < NUM_THREADS; ++i)
@@ -75,8 +55,6 @@ int main(int argc, const char * argv[]) {
     // print data
     for (int i = 0; i < NUM_THREADS; ++i)
         printf("%i: %i\n", i, args_and_data_vec[i].data);
-    
-    printf("number of hardware threads: %i\n", num_hardware_threads);
     
     return 0;
 }
