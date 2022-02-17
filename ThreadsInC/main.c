@@ -3,14 +3,12 @@
 //  ThreadsInC
 //
 //  Created by mndx on 17/02/2022.
-//  Playing with threads on macOS.
+//  Playing with threads.
 //
 
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/param.h>
-#include <sys/sysctl.h>
 
 #define NUM_THREADS 8
 
