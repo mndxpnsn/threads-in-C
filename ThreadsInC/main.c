@@ -10,8 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NUM_THREADS 8
-
 typedef struct user_type {
     int arg;
     int data;
@@ -30,16 +28,19 @@ void * runner(void * args_and_data) {
 int main(int argc, const char * argv[]) {
     
     // declarations
-    pthread_attr_t thread_attr[NUM_THREADS];
-    pthread_t thread_ids[NUM_THREADS];
-    u_type * args_and_data_vec = (u_type *) calloc(NUM_THREADS, NUM_THREADS * sizeof(u_type));
+    int size_vec = 4;
+    
+    // allocate required memory
+    pthread_attr_t thread_attr[size_vec];
+    pthread_t thread_ids[size_vec];
+    u_type * args_and_data_vec = (u_type *) calloc(size_vec, size_vec * sizeof(u_type));
     
     // set runner arguments
-    for (int i = 0; i < NUM_THREADS; ++i)
+    for (int i = 0; i < size_vec; ++i)
         args_and_data_vec[i].arg = 2 * (i + 1);
 
     // create threads
-    for (int i = 0; i < NUM_THREADS; ++i) {
+    for (int i = 0; i < size_vec; ++i) {
         // set the default attributes of the thread
         pthread_attr_init(&thread_attr[i]);
         // create the thread
@@ -47,11 +48,11 @@ int main(int argc, const char * argv[]) {
     }
 
     // wait for the threads to exit
-    for (int i = 0; i < NUM_THREADS; ++i)
+    for (int i = 0; i < size_vec; ++i)
         pthread_join(thread_ids[i], NULL);
     
     // print data
-    for (int i = 0; i < NUM_THREADS; ++i)
+    for (int i = 0; i < size_vec; ++i)
         printf("%i: %i\n", i, args_and_data_vec[i].data);
     
     // free allocated data
