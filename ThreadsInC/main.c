@@ -54,5 +54,8 @@ int main(int argc, const char * argv[]) {
     for (int i = 0; i < NUM_THREADS; ++i)
         printf("%i: %i\n", i, args_and_data_vec[i].data);
     
+    // free allocated data
+    free(args_and_data_vec);
+    
     return 0;
 }
